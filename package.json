@@ -3,6 +3,9 @@
   "version": "0.3.0",
   "private": true,
   "description": "Servidor web inicial do RIFT Arena para Render.",
+  "dependencies": {
+    "ws": "^8.18.3"
+  },
   "scripts": {
     "start": "node server.js"
   },

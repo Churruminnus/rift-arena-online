@@ -16,7 +16,7 @@
       <div class="hud" id="hud">
         <div class="fighter-hud cyan"><div class="helmet"><svg viewBox="0 0 64 70"><path d="M15 53 9 29 18 10 44 7 56 26 51 55 36 65Z"/><path class="visor" d="m15 26 19 7 18-10-6 18-14 6-14-8Z"/><path class="chin" d="m24 49 10 5 11-7-4 12-10 3Z"/></svg></div><div><span class="eyebrow">JOGADOR 01</span><strong>VOCÊ</strong><div id="hpYou" class="hearts"></div></div></div>
         <div class="match-hud"><span id="roundLabel">DUELO 1×1</span><div class="score"><b id="scoreYou">0</b><span>:</span><b id="scoreBot">0</b></div><div id="timer">01:00</div></div>
-        <div class="fighter-hud orange"><div class="helmet"><svg viewBox="0 0 64 70"><path d="M15 53 9 29 18 10 44 7 56 26 51 55 36 65Z"/><path class="visor" d="m15 26 19 7 18-10-6 18-14 6-14-8Z"/><path class="chin" d="m24 49 10 5 11-7-4 12-10 3Z"/></svg></div><div><span id="botLevel" class="eyebrow">BOT · NORMAL</span><strong>SENTINELA</strong><div id="hpBot" class="hearts"></div></div></div>
+        <div class="fighter-hud orange"><div class="helmet"><svg viewBox="0 0 64 70"><path d="M15 53 9 29 18 10 44 7 56 26 51 55 36 65Z"/><path class="visor" d="m15 26 19 7 18-10-6 18-14 6-14-8Z"/><path class="chin" d="m24 49 10 5 11-7-4 12-10 3Z"/></svg></div><div><span id="botLevel" class="eyebrow">BOT · NORMAL</span><strong id="opponentName">SENTINELA</strong><div id="hpBot" class="hearts"></div></div></div>
       </div>
       <button id="arenaPause" class="icon-button arena-pause" aria-label="Pausar partida">Ⅱ</button>
       <button id="loadoutButton" class="loadout-button" aria-label="Ver cartas ativas" hidden>▱ CARTAS</button>
@@ -26,10 +26,11 @@
       <button id="dash" class="dash-button" aria-label="Esquivar"><span>»</span><small id="dashLabel">ESQUIVA</small><kbd>ESPAÇO</kbd></button>
       <div id="overlay" class="overlay">
         <div class="modal" id="modal">
-          <div class="modal-top"><span class="small-tag">ARENA 1×1</span><span class="offline-tag"><i></i> CONTRA BOT</span></div>
-          <h1>ENTRE NA <em>ARENA.</em></h1><p class="intro">Escolha suas cartas. Combine poderes. Vença o rival.<br>Uma nova escolha antes de cada rodada.</p>
+          <div class="modal-top"><span class="small-tag">ARENA 1×1</span><span class="offline-tag"><i></i> BOT E ONLINE</span></div>
+          <h1>ENTRE NA <em>ARENA.</em></h1><p class="intro">Escolha seu modo, monte sua combinação e vença o rival.<br>Uma nova escolha antes de cada rodada.</p>
           <div class="rules"><div><b>03</b><span>CARTAS PARA ESCOLHER</span></div><div><b>03</b><span>VITÓRIAS PARA VENCER</span></div><div><b>60<span>s</span></b><span>TEMPO POR RODADA</span></div></div>
-          <div class="difficulty-label">ESCOLHA SEU ADVERSÁRIO</div><div class="difficulty" role="group" aria-label="Dificuldade"><button data-level="easy" aria-pressed="false">INICIANTE<span>Aprenda o ritmo</span></button><button data-level="normal" class="selected" aria-pressed="true">NORMAL<span>Encontre a brecha</span></button><button data-level="hard" aria-pressed="false">DIFÍCIL<span>Teste seus reflexos</span></button></div>
+          <div class="difficulty-label">ESCOLHA SEU MODO</div><div class="difficulty mode-picker" role="group" aria-label="Modo de jogo"><button id="modeBot" class="selected" aria-pressed="true">CONTRA BOT<span>Treine no seu ritmo</span></button><button id="modeOnline" aria-pressed="false">ONLINE 1×1<span>Enfrente outro jogador</span></button></div>
+          <div id="botOptions"><div class="difficulty-label">ESCOLHA SEU ADVERSÁRIO</div><div class="difficulty" role="group" aria-label="Dificuldade"><button data-level="easy" aria-pressed="false">INICIANTE<span>Aprenda o ritmo</span></button><button data-level="normal" class="selected" aria-pressed="true">NORMAL<span>Encontre a brecha</span></button><button data-level="hard" aria-pressed="false">DIFÍCIL<span>Teste seus reflexos</span></button></div></div>
           <button id="play" class="primary">ENTRAR NA ARENA <span>↗</span></button>
           <button id="catalog" class="secondary catalog-link">▱ CONHECER AS 26 CARTAS</button>
           <div class="howto desktop-help"><span><kbd>W A S D</kbd> mover</span><span><kbd>MOUSE</kbd> mirar e atirar</span><span><kbd>ESPAÇO</kbd> esquivar</span></div>

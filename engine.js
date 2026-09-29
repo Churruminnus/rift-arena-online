@@ -58,10 +58,11 @@
   }
   function fighter(x,y,team){return {x,y,r:18,team,hp:3,angle:team==='you'?-.6:2.6,vx:0,vy:0,fireCd:.5,dashCd:0,dashTime:0,dashX:0,dashY:0,invuln:0,hit:0,recoil:0,hazard:0,sinceShot:1,firstShot:true,counterReady:false,adrenaline:0,momentum:0,exit:0,marked:0};}
   class Game {
-    constructor(random=Math.random){this.random=random;this.events=[];this.difficulty='normal';this.score={you:0,bot:0};this.builds={you:{},bot:{}};this.round=1;this.stats={shots:0,hits:0,dashes:0};this.state='menu';this.initRound();this.state='menu';}
+    constructor(random=Math.random){this.random=random;this.events=[];this.difficulty='normal';this.online=false;this.score={you:0,bot:0};this.builds={you:{},bot:{}};this.round=1;this.stats={shots:0,hits:0,dashes:0};this.state='menu';this.initRound();this.state='menu';}
     emit(type,data={}){this.events.push({type,...data});}
     drain(){const e=this.events;this.events=[];return e;}
-    start(difficulty='normal'){this.difficulty=SETTINGS[difficulty]?difficulty:'normal';this.score={you:0,bot:0};this.builds={you:{},bot:{}};this.round=1;this.stats={shots:0,hits:0,dashes:0};this.events=[];this.initRound();this.prepareDraft();}
+    start(difficulty='normal'){this.online=false;this.difficulty=SETTINGS[difficulty]?difficulty:'normal';this.score={you:0,bot:0};this.builds={you:{},bot:{}};this.round=1;this.stats={shots:0,hits:0,dashes:0};this.events=[];this.initRound();this.prepareDraft();}
+    startOnline(){this.online=true;this.difficulty='normal';this.score={you:0,bot:0};this.builds={you:{},bot:{}};this.round=1;this.stats={shots:0,hits:0,dashes:0};this.events=[];this.initRound();this.prepareDraft();}
     initRound(){this.player=fighter(360,570,'you');this.bot=fighter(840,174,'bot');this.bullets=[];this.bombs=[];this.echoes=[];this.time=60;this.countdown=1.6;this.zone=0;this.state='playing';this.paused=false;this.result=null;this.matchWinner=null;this.ai={think:0,path:[],dir:1,shift:1.3,react:.15};}
     rank(team,id){return this.builds[team][id]||0;}
     offer(team){const pool=CARDS.filter(c=>this.rank(team,c.id)<c.max&&(!c.requires||this.rank(team,c.requires)>0)).map(c=>c.id);for(let i=pool.length-1;i>0;i--){const j=Math.min(i,Math.floor(this.random()*(i+1)));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.slice(0,3);}
@@ -72,11 +73,19 @@
       if(id)this.builds.you[id]=this.rank('you',id)+1;
       if(this.botPick)this.builds.bot[this.botPick]=this.rank('bot',this.botPick)+1;
       this.picks={you:id,bot:this.botPick};this.state='reveal';this.emit('reveal');return true;}
+    chooseCards(youId,botId){
+      if(this.state!=='draft')return false;
+      const valid=(team,id)=>this.offers[team].length?this.offers[team].includes(id):id===null;
+      if(!valid('you',youId)||!valid('bot',botId))return false;
+      if(youId)this.builds.you[youId]=this.rank('you',youId)+1;
+      if(botId)this.builds.bot[botId]=this.rank('bot',botId)+1;
+      this.picks={you:youId,bot:botId};this.state='reveal';this.emit('reveal');return true;
+    }
     beginRound(){if(this.state!=='reveal')return false;this.state='playing';this.emit('round');return true;}
     nextRound(){if(this.state==='roundOver'){this.round++;this.initRound();this.prepareDraft();}}
     weapon(team){const p=team==='you'?this.player:this.bot,R=id=>this.rank(team,id),heavy=R('heavy'),double=R('double');
       const bonus=.08*R('velocity')+(p.hp===1?.12*R('cold'):0)+(p.sinceShot>=1?.15*R('patient'):0)+(p.counterReady?.2*R('counter'):0);
-      return {count:1+double,interval:(team==='you'?.34:SETTINGS[this.difficulty].fire)*Math.pow(1.5,double)*(1-.05*R('rhythm')),speed:560*Math.pow(.75,heavy)*(1+bonus),radius:(5+heavy*3)*(1+.1*R('caliber')+(p.firstShot?.2*R('prepared'):0)),damage:1+heavy,bounces:R('ricochet'),life:(2.2+heavy*.5)*(1+.2*R('range')),pierce:!!R('pierce')};}
+      return {count:1+double,interval:(this.online?.34:(team==='you'?.34:SETTINGS[this.difficulty].fire))*Math.pow(1.5,double)*(1-.05*R('rhythm')),speed:560*Math.pow(.75,heavy)*(1+bonus),radius:(5+heavy*3)*(1+.1*R('caliber')+(p.firstShot?.2*R('prepared'):0)),damage:1+heavy,bounces:R('ricochet'),life:(2.2+heavy*.5)*(1+.2*R('range')),pierce:!!R('pierce')};}
     movementBonus(p){return .06*this.rank(p.team,'light')+(this.time>58?.15*this.rank(p.team,'opener'):0)+(p.adrenaline>0?.12:0)+(p.momentum>0?.08:0)+(p.exit>0?.08:0);}
     dash(p,dx,dy){if(p.dashCd>0||p.dashTime>0)return false;const n=norm(dx,dy);if(!n.x&&!n.y)return false;p.dashX=n.x;p.dashY=n.y;p.dashTime=.16;p.dashCd=3*(1-.08*this.rank(p.team,'reflex'));p.invuln=.21;if(p.team==='you')this.stats.dashes++;this.emit('dash',{x:p.x,y:p.y,team:p.team});const bomb=this.rank(p.team,'bomb');if(bomb)this.bombs.push({x:p.x,y:p.y,team:p.team,fuse:.65,radius:82+14*(bomb-1)});if(this.rank(p.team,'echo'))this.echoes.push({...p,life:.75,dashTime:0,invuln:0});return true;}
     fire(p,angle){if(p.fireCd>0||p.hp<=0)return false;
@@ -162,19 +171,16 @@
       if((clear||bank!==null)&&d<790&&b.fireCd<=0){const spread=(this.random()-.5)*s.spread*(bank!==null?.5:2);this.fire(b,b.angle+spread);}
     }
     moveFighter(p,mx,my,speed,dt){const x=p.x,y=p.y;if(p.dashTime>0){const boost=1+.2*this.rank(p.team,'longdash');move(p,p.dashX*810*dt*boost,p.dashY*810*dt*boost);}else{const boost=1+this.movementBonus(p);move(p,mx*speed*dt*boost,my*speed*dt*boost);}p.vx=(p.x-x)/dt;p.vy=(p.y-y)/dt;}
-    update(dt,input={}){
+    controlHuman(p,input,dt){const m=norm(input.mx||0,input.my||0);if(Number.isFinite(input.angle))p.angle=input.angle;if(input.dash)this.dash(p,m.x||m.y?m.x:Math.cos(p.angle),m.x||m.y?m.y:Math.sin(p.angle));this.moveFighter(p,m.x,m.y,226,dt);if(input.fire)this.fire(p,p.angle);}
+    update(dt,input={},opponentInput=null){
       if(this.state!=='playing'||this.paused)return;
       dt=clamp(dt,0,.034);if(dt<=0)return;
       if(this.countdown>0){this.countdown=Math.max(0,this.countdown-dt);return;}
       this.time=Math.max(0,this.time-dt);this.zone=this.time<25?(25-this.time)/25*195:0;
       for(const p of [this.player,this.bot]){const wasDashing=p.dashTime>0;for(const k of ['fireCd','dashTime','invuln','hit','adrenaline','momentum','exit','marked'])p[k]=Math.max(0,p[k]-dt);if(wasDashing&&p.dashTime===0&&this.rank(p.team,'exit'))p.exit=1;p.sinceShot+=dt;p.dashCd=Math.max(0,p.dashCd-dt*(p.hp===1?1+.6*this.rank(p.team,'breath'):1));p.recoil=Math.max(0,p.recoil-dt*9);}
       this.echoes=this.echoes.filter(e=>(e.life-=dt)>0);
-      const p=this.player,m=norm(input.mx||0,input.my||0);
-      if(Number.isFinite(input.angle))p.angle=input.angle;
-      if(input.dash)this.dash(p,m.x||m.y?m.x:Math.cos(p.angle),m.x||m.y?m.y:Math.sin(p.angle));
-      this.moveFighter(p,m.x,m.y,226,dt);
-      if(input.fire)this.fire(p,p.angle);
-      this.controlBot(dt);
+      this.controlHuman(this.player,input,dt);
+      if(opponentInput)this.controlHuman(this.bot,opponentInput,dt);else this.controlBot(dt);
       this.collideProjectiles(dt);
       const live=[];
       for(const q of this.bullets){
