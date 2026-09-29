@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#0b1119">
+  <title>RIFT — Arena 1x1</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cards.css">
+</head>
+<body>
+  <main class="app">
+    <header class="topbar"><a class="brand" href="./index.html" aria-label="Rift início"><span class="brand-mark">↯</span> RIFT<span class="brand-sub">ARENA</span></a><div class="build"><span></span> PROTÓTIPO JOGÁVEL <b>03</b></div><div class="tools"><button id="touchToggle" class="icon-button" aria-label="Mostrar controles de toque" title="Mostrar controles de toque">✥</button><button id="sound" class="icon-button" aria-label="Ativar som" title="Ativar som">♪<span id="soundState">OFF</span></button><button id="fullscreen" class="icon-button" aria-label="Tela cheia" title="Tela cheia">⛶</button><button id="pause" class="icon-button" aria-label="Pausar" title="Pausar (P ou Esc)">Ⅱ</button></div></header>
+    <section id="stage" class="stage" aria-label="Arena de combate">
+      <canvas id="arena" width="1200" height="720" aria-label="Jogo de arena. Use WASD para mover, mouse para mirar e disparar e espaço para esquivar."></canvas>
+      <div class="hud" id="hud">
+        <div class="fighter-hud cyan"><div class="helmet"><svg viewBox="0 0 64 70"><path d="M15 53 9 29 18 10 44 7 56 26 51 55 36 65Z"/><path class="visor" d="m15 26 19 7 18-10-6 18-14 6-14-8Z"/><path class="chin" d="m24 49 10 5 11-7-4 12-10 3Z"/></svg></div><div><span class="eyebrow">JOGADOR 01</span><strong>VOCÊ</strong><div id="hpYou" class="hearts"></div></div></div>
+        <div class="match-hud"><span id="roundLabel">DUELO 1×1</span><div class="score"><b id="scoreYou">0</b><span>:</span><b id="scoreBot">0</b></div><div id="timer">01:00</div></div>
+        <div class="fighter-hud orange"><div class="helmet"><svg viewBox="0 0 64 70"><path d="M15 53 9 29 18 10 44 7 56 26 51 55 36 65Z"/><path class="visor" d="m15 26 19 7 18-10-6 18-14 6-14-8Z"/><path class="chin" d="m24 49 10 5 11-7-4 12-10 3Z"/></svg></div><div><span id="botLevel" class="eyebrow">BOT · NORMAL</span><strong>SENTINELA</strong><div id="hpBot" class="hearts"></div></div></div>
+      </div>
+      <button id="arenaPause" class="icon-button arena-pause" aria-label="Pausar partida">Ⅱ</button>
+      <button id="loadoutButton" class="loadout-button" aria-label="Ver cartas ativas" hidden>▱ CARTAS</button>
+      <div id="zoneWarning" class="zone-warning" hidden>⚠ A ARENA ESTÁ FECHANDO</div>
+      <div id="countdown" class="countdown" hidden></div>
+      <div id="touchControls" class="touch-controls"><div id="moveStick" class="stick move-stick"><span class="stick-arrow up">⌃</span><span class="stick-arrow down">⌄</span><span class="stick-arrow left">‹</span><span class="stick-arrow right">›</span><div class="knob"></div><label>MOVER</label></div><div id="aimStick" class="stick aim-stick"><div class="crosshair"></div><div class="knob"></div><label>MIRAR / ATIRAR</label></div></div>
+      <button id="dash" class="dash-button" aria-label="Esquivar"><span>»</span><small id="dashLabel">ESQUIVA</small><kbd>ESPAÇO</kbd></button>
+      <div id="overlay" class="overlay">
+        <div class="modal" id="modal">
+          <div class="modal-top"><span class="small-tag">ARENA 1×1</span><span class="offline-tag"><i></i> CONTRA BOT</span></div>
+          <h1>ENTRE NA <em>ARENA.</em></h1><p class="intro">Escolha suas cartas. Combine poderes. Vença o rival.<br>Uma nova escolha antes de cada rodada.</p>
+          <div class="rules"><div><b>03</b><span>CARTAS PARA ESCOLHER</span></div><div><b>03</b><span>VITÓRIAS PARA VENCER</span></div><div><b>60<span>s</span></b><span>TEMPO POR RODADA</span></div></div>
+          <div class="difficulty-label">ESCOLHA SEU ADVERSÁRIO</div><div class="difficulty" role="group" aria-label="Dificuldade"><button data-level="easy" aria-pressed="false">INICIANTE<span>Aprenda o ritmo</span></button><button data-level="normal" class="selected" aria-pressed="true">NORMAL<span>Encontre a brecha</span></button><button data-level="hard" aria-pressed="false">DIFÍCIL<span>Teste seus reflexos</span></button></div>
+          <button id="play" class="primary">ENTRAR NA ARENA <span>↗</span></button>
+          <button id="catalog" class="secondary catalog-link">▱ CONHECER AS 26 CARTAS</button>
+          <div class="howto desktop-help"><span><kbd>W A S D</kbd> mover</span><span><kbd>MOUSE</kbd> mirar e atirar</span><span><kbd>ESPAÇO</kbd> esquivar</span></div>
+          <div class="howto mobile-help">Controle esquerdo para mover · Direito para mirar e disparar</div>
+          <p class="small-note">26 cartas · Até 5 rodadas · Poderes zerados a cada partida</p>
+        </div>
+      </div>
+      <div id="portraitHint" class="portrait-hint">⤾ <span>Gire o celular para ampliar a arena</span></div>
+    </section>
+    <footer class="footer"><span><i class="live-dot"></i> TREINO LOCAL <b>/</b> <span id="footerDifficulty">BOT NORMAL</span></span><span class="desktop-help">WASD / SETAS <b>mover</b> <span class="separator">·</span> MOUSE <b>mirar + disparar</b> <span class="separator">·</span> ESPAÇO <b>esquivar</b></span><span class="mobile-help">MOVA · MIRE · DESVIE</span><span id="statusText">ATÉ 5 RODADAS · 3 VITÓRIAS</span></footer>
+  </main>
+  <script src="cards.js"></script><script src="engine.js"></script><script src="card-art.js"></script><script src="game.js"></script>
+</body>
+</html>
