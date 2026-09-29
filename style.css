@@ -20,3 +20,6 @@ body.touch-mode .desktop-help{display:none!important}body.touch-mode .mobile-hel
   .knob{width:36px;height:36px;left:calc(50% - 18px);top:calc(50% - 18px)}
   .dash-button,body.touch-mode .dash-button{width:54px;height:54px;right:18%;bottom:9%}.dash-button>span{font-size:32px}.dash-button small{font-size:6px}
 }
+
+.online-clock{display:inline-block;margin-left:8px;color:#ffe29a;letter-spacing:.08em;font-size:.82em}.online-clock span{font-size:1.25em;color:#fff;font-weight:900}
+
