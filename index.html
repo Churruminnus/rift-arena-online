@@ -32,7 +32,7 @@
           <div class="difficulty-label">ESCOLHA SEU MODO</div><div class="difficulty mode-picker" role="group" aria-label="Modo de jogo"><button id="modeBot" class="selected" aria-pressed="true">CONTRA BOT<span>Treine no seu ritmo</span></button><button id="modeOnline" aria-pressed="false">ONLINE 1×1<span>Enfrente outro jogador</span></button></div>
           <div id="botOptions"><div class="difficulty-label">ESCOLHA SEU ADVERSÁRIO</div><div class="difficulty" role="group" aria-label="Dificuldade"><button data-level="easy" aria-pressed="false">INICIANTE<span>Aprenda o ritmo</span></button><button data-level="normal" class="selected" aria-pressed="true">NORMAL<span>Encontre a brecha</span></button><button data-level="hard" aria-pressed="false">DIFÍCIL<span>Teste seus reflexos</span></button></div></div>
           <button id="play" class="primary">ENTRAR NA ARENA <span>↗</span></button>
-          <button id="catalog" class="secondary catalog-link">▱ CONHECER AS 26 CARTAS</button>
+          <button id="account" class="secondary">CONTA GOOGLE</button><button id="friends" class="secondary">AMIGOS</button><button id="catalog" class="secondary catalog-link">▱ CONHECER AS 26 CARTAS</button>
           <div class="howto desktop-help"><span><kbd>W A S D</kbd> mover</span><span><kbd>MOUSE</kbd> mirar e atirar</span><span><kbd>ESPAÇO</kbd> esquivar</span></div>
           <div class="howto mobile-help">Controle esquerdo para mover · Direito para mirar e disparar</div>
           <p class="small-note">26 cartas · Até 5 rodadas · Poderes zerados a cada partida</p>
@@ -42,6 +42,7 @@
     </section>
     <footer class="footer"><span><i class="live-dot"></i> TREINO LOCAL <b>/</b> <span id="footerDifficulty">BOT NORMAL</span></span><span class="desktop-help">WASD / SETAS <b>mover</b> <span class="separator">·</span> MOUSE <b>mirar + disparar</b> <span class="separator">·</span> ESPAÇO <b>esquivar</b></span><span class="mobile-help">MOVA · MIRE · DESVIE</span><span id="statusText">ATÉ 5 RODADAS · 3 VITÓRIAS</span></footer>
   </main>
-  <script src="cards.js"></script><script src="engine.js"></script><script src="card-art.js"></script><script src="game.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script src="playfab-config.js"></script><script src="playfab-client.js"></script><script src="cards.js"></script><script src="engine.js"></script><script src="card-art.js"></script><script src="game.js"></script>
 </body>
 </html>
